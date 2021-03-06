@@ -4,16 +4,19 @@ namespace Training\Test\App;
 
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\App\RouterListInterface;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class FrontController
  * @package Training\Test\App
  */
-class FrontController
+class FrontController extends \Magento\Framework\App\FrontController
 {
     /**
-     * @var \Magento\Framework\App\RouterListInterface
+     * @var RouterListInterface
      */
     protected $routerList;
     /**
@@ -21,27 +24,33 @@ class FrontController
      */
     protected $response;
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     private $logger;
+
     /**
-     * @param \Magento\Framework\App\RouterListInterface $routerList
+     * FrontController constructor.
+     * @param RouterListInterface $routerList
      * @param ResponseInterface $response
-     * @param \Psr\Log\LoggerInterface $logger
+     * @param LoggerInterface $logger
      */
     public function __construct(
-        \Magento\Framework\App\RouterListInterface $routerList,
+        RouterListInterface $routerList,
         ResponseInterface $response,
-        \Psr\Log\LoggerInterface $logger
+        LoggerInterface $logger
     ) {
         $this->routerList = $routerList;
         $this->response = $response;
         $this->logger = $logger;
+        parent::__construct(       $routerList,
+         $response,
+        $requestValidator = null,
+         $messageManager = null);
     }
 
     /**
      * @param RequestInterface $request
-     * @return ResponseInterface|\Magento\Framework\Controller\ResultInterface|null
+     * @return ResponseInterface|ResultInterface|null
      * @throws LocalizedException
      */
     public function dispatch(RequestInterface $request)
@@ -49,6 +58,6 @@ class FrontController
         foreach ($this->routerList as $router) {
             $this->logger->info(get_class($router));
         }
-        return null;
+        return parent::dispatch($request);
     }
 }
