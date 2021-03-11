@@ -13,6 +13,7 @@ class Index extends \Magento\Framework\App\Action\Action
      */
     private $layoutFactory;
 
+
     /**
      * Index constructor.
      * @param \Magento\Backend\App\Action\Context $context
@@ -20,16 +21,18 @@ class Index extends \Magento\Framework\App\Action\Action
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\View\LayoutFactory $layoutFactory
+        \Magento\Framework\View\LayoutFactory $layoutFactory,
+        \Magento\Framework\Controller\Result\RawFactory $rawFactory
     ){
         $this->layoutFactory = $layoutFactory;
+        $this->rawFactory =$rawFactory;
         parent:: __construct($context);
     }
 
     public function execute()
     {
-        $layout = $this->layoutFactory->create();
-        $block = $layout->createBlock('Training\Test\Block\Test');
-        $this->getResponse()->appendBody($block->toHtml());
+        $resultRaw = $this->rawFactory->create();
+        $resultRaw->setContents('<strong>Simple text</strong>');
+        return $resultRaw;
     }
 }
